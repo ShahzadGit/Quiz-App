@@ -1,0 +1,28 @@
+name: QUIZ APP
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '15.x'
+      - run: npm ci
+      - run: CI='' npm run build --if-present
+
+      
+      - name: Installing surge
+        run: npm install -g surge
+     
+      - name: Deploying on Surge
+        run: surge ./build https://myquizapp.surge.sh/ --token ${{secrets.SURGE_TOKEN}}
